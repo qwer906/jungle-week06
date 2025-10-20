@@ -29,4 +29,7 @@ int rbtree_erase(rbtree *, node_t *);
 
 int rbtree_to_array(const rbtree *, key_t *, const size_t);
 
+void pretty_dfs(const rbtree *t, const node_t *node, const char *prefix, int is_left);
+void debug_print_pretty(const rbtree *t);
+
 #endif  // _RBTREE_H_
