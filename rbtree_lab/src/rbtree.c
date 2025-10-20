@@ -100,7 +100,7 @@ void insert_fix_up(rbtree *t, node_t *x) {
         cur -> parent -> parent -> color = RBTREE_RED;
         cur = cur -> parent -> parent;
       }
-      // uncle is left
+      // uncle is black
       else {
         // uncle is black and cur is right child
         if (cur -> parent -> right == cur) {
@@ -184,7 +184,6 @@ node_t *rbtree_find(const rbtree *t, const key_t key) {
   node_t *cur = t -> root;
   
   while (cur != t -> nil) {
-    printf("%d\n", cur -> key);
     if (cur -> key == key) {
       return cur;
     }
@@ -263,18 +262,20 @@ void delete_fix_up(rbtree *t, node_t* x){
         }
         // case3 : w == black && w's left is red and w's right is black
         else { 
-          if (w -> left -> color == RBTREE_RED && w -> right -> color ==RBTREE_BLACK) {
+          if (w -> left -> color == RBTREE_RED) {
             w -> color = RBTREE_RED;
             w -> left -> color = RBTREE_BLACK;
             right_rotate(t, w -> left);
             w = x -> parent -> right;
           }
           // case4 : w == black && w's right is red
-          w -> color = x -> parent ->color;
-          x -> parent -> color = RBTREE_BLACK;
-          w -> right ->color = RBTREE_BLACK;
-          left_rotate(t, x -> parent);
-          x = t -> root;
+          else {
+            w -> color = x -> parent ->color;
+            x -> parent -> color = RBTREE_BLACK;
+            w -> right ->color = RBTREE_BLACK;
+            left_rotate(t, x -> parent);
+            x = t -> root;
+          }
         }
       }
     }
@@ -287,6 +288,7 @@ void delete_fix_up(rbtree *t, node_t* x){
         w -> color = RBTREE_BLACK;
         x -> parent -> color = RBTREE_RED;
         right_rotate(t, w);
+        w = x-> parent -> left;
       }
       else {
         // case2 : w == black && w->left == black and w->right == black
@@ -300,14 +302,16 @@ void delete_fix_up(rbtree *t, node_t* x){
             w -> color = RBTREE_RED;
             w -> right -> color = RBTREE_BLACK;
             left_rotate(t, w);
-            w = x -> parent -> right;
+            w = x -> parent -> left;
           }
           // case4 : w == black && w->left == red
-          w -> color = x -> parent -> color;
-          x -> parent -> color = RBTREE_BLACK;
-          w -> left -> color = RBTREE_BLACK;
-          right_rotate(t, w);
-          x = t -> root;
+          else {
+            w -> color = x -> parent -> color;
+            x -> parent -> color = RBTREE_BLACK;
+            w -> left -> color = RBTREE_BLACK;
+            right_rotate(t, w);
+            x = t -> root;
+          }
         }
       }
     }
